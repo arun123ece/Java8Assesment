@@ -1,6 +1,8 @@
 package com.learn.issuetracker.service;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -167,8 +169,9 @@ public class IssueTrackerServiceImpl implements IssueTrackerService {
 
 		LocalDate currentDate = LocalDate.parse(CURRENT_DATE);
 
-		List<String>  returnList = issueList.stream().filter(p -> p.getExpectedResolutionOn().plusDays(7).isAfter(currentDate) && p.getStatus().equalsIgnoreCase("open"))
-				.map(m -> m.getAssignedTo().getName())
+		List<String>  returnList = issueList.stream()
+				.filter(p -> ChronoUnit.DAYS.between(p.getExpectedResolutionOn(), currentDate) > 7/*p.getExpectedResolutionOn().plusDays(7).isAfter(currentDate)*/ && p.getStatus().equalsIgnoreCase("open"))
+				.map(m -> m.getAssignedTo().getName()).distinct()
 				.collect(Collectors.toList());
 
 
@@ -246,7 +249,12 @@ public class IssueTrackerServiceImpl implements IssueTrackerService {
 	public Map<String, Long> getHighMediumOpenIssueDuration() { 
 
 		List<Issue> issueList = issueDao.getIssues();
+		LocalDate currentDate = LocalDate.parse(CURRENT_DATE);
+		
+		Map<String, Long> returnMap = issueList.stream()
+				.filter(p -> p.getPriority().toLowerCase().matches("high|medium") && p.getStatus().equalsIgnoreCase("open"))
+				.collect(Collectors.toMap(Issue :: getIssueId, k -> ChronoUnit.DAYS.between(k.getCreatedOn(), currentDate)));
 
-		return null;
+		return returnMap;
 	}
 }
