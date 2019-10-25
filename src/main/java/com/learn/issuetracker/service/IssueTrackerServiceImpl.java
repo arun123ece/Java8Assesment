@@ -1,18 +1,15 @@
 package com.learn.issuetracker.service;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.omg.CORBA.portable.ValueBase;
 
 import com.learn.issuetracker.exceptions.IssueNotFoundException;
 import com.learn.issuetracker.model.Employee;
@@ -72,6 +69,10 @@ public class IssueTrackerServiceImpl implements IssueTrackerService {
 
 	@Override
 	public Issue getIssueById(String issueId) throws IssueNotFoundException {
+		
+		if(null == issueId || issueId.isEmpty()) {
+			return null;
+		}
 
 		List<Issue> issueList = issueDao.getIssues();
 		issueList = issueList.stream().filter(p -> p.getIssueId().equalsIgnoreCase(issueId)).collect(Collectors.toList());
@@ -170,7 +171,7 @@ public class IssueTrackerServiceImpl implements IssueTrackerService {
 		LocalDate currentDate = LocalDate.parse(CURRENT_DATE);
 
 		List<String>  returnList = issueList.stream()
-				.filter(p -> ChronoUnit.DAYS.between(p.getExpectedResolutionOn(), currentDate) > 7/*p.getExpectedResolutionOn().plusDays(7).isAfter(currentDate)*/ && p.getStatus().equalsIgnoreCase("open"))
+				.filter(p -> ChronoUnit.DAYS.between(p.getExpectedResolutionOn(), currentDate) > 7 && p.getStatus().equalsIgnoreCase("open"))
 				.map(m -> m.getAssignedTo().getName()).distinct()
 				.collect(Collectors.toList());
 
