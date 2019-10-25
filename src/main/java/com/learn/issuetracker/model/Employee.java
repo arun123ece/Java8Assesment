@@ -18,6 +18,39 @@ public class Employee {
 	 */
 	public Employee(int emplId, String name, String location) {
 
+		super();
+		this.emplId = emplId;
+		this.name = name;
+		this.location = location;
+	}
+
+	public int getEmplId() {
+		return emplId;
+	}
+
+	public void setEmplId(int emplId) {
+		this.emplId = emplId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee : {Employee Id : "+emplId+"; Name :"+name+"; Location : "+location+"}";
 	}
 
 	/*
@@ -30,28 +63,6 @@ public class Employee {
 	/*
 	 * Complete the Getter and Setters
 	 */
-	public int getEmplId() {
-		return 0;
-	}
-
-	public void setEmplId(int emplId) {
-
-	}
-
-	public String getName() {
-		return null;
-	}
-
-	public void setName(String name) {
-
-	}
-
-	public String getLocation() {
-		return null;
-	}
-
-	public void setLocation(String location) {
-
-	}
+	
 
 }

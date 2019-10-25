@@ -1,8 +1,13 @@
 package com.learn.issuetracker.repository;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional;import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.learn.issuetracker.model.Employee;
 
@@ -24,6 +29,8 @@ public class EmployeeRepository {
 	 */
 	static {
 
+		Path path = Paths.get("src", "data", "employees.csv");
+		initializeEmployeesFromFile(path);
 	}
 
 	/*
@@ -33,7 +40,15 @@ public class EmployeeRepository {
 	 * converting the line read from the file in to Employee Object
 	 */
 	public static void initializeEmployeesFromFile(Path employeesfilePath) {
+		
+		try(Stream<String> fileData = Files.newBufferedReader(employeesfilePath).lines()){	
 
+			employees = fileData.map(Utility :: parseEmployee)
+					.collect(Collectors.toList());
+
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -41,7 +56,15 @@ public class EmployeeRepository {
 	 * employee Id, and return the employee found, in an Optional<Employee> object
 	 */
 	public static Optional<Employee> getEmployee(int empId) {
-		return null;
+		
+		  List<Employee> newEmpList = employees.stream().filter(p -> p.getEmplId() == empId).collect(Collectors.toList());
+		 
+		  if(null != newEmpList || newEmpList.size() > 0) {
+			  return  Optional.ofNullable(newEmpList.get(0));
+		  }else {
+			  return null;
+		  }
+		  
 	}
 
 	// Getter
