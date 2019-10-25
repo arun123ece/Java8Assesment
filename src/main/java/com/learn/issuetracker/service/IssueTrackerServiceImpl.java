@@ -219,7 +219,9 @@ public class IssueTrackerServiceImpl implements IssueTrackerService {
 
 		List<Issue> issueList = issueDao.getIssues();
 
-		Map<String, Long> returnMap = issueList.stream().collect(Collectors.groupingBy(Issue :: getPriority, Collectors.counting()));
+		Map<String, Long> returnMap = issueList.stream()
+				.filter(p -> p.getStatus().equalsIgnoreCase("open"))
+				.collect(Collectors.groupingBy(Issue :: getPriority, Collectors.counting()));
 
 		return returnMap;
 	}

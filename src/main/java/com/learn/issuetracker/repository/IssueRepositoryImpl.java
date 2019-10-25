@@ -12,7 +12,7 @@ import com.learn.issuetracker.model.Issue;
 /*
  * This class is used to read the issues data from the file and store it in a collection. Java8 NIO 
  * should be used to read the file in to streams
-*/
+ */
 public class IssueRepositoryImpl implements IssueRepository {
 
 	/*
@@ -32,10 +32,10 @@ public class IssueRepositoryImpl implements IssueRepository {
 	 *
 	 */
 	public IssueRepositoryImpl(Path issuesFilePath) {
-		
+
 		this.issuesFilePath = issuesFilePath;
 		initializeIssuesFromFile();
-	//	this.issues = issues;
+		//	this.issues = issues;
 	}
 
 	/*
@@ -49,13 +49,14 @@ public class IssueRepositoryImpl implements IssueRepository {
 
 	public void initializeIssuesFromFile() {
 
-		try(Stream<String> fileData = Files.newBufferedReader(issuesFilePath).lines()){	
-
-			issues = fileData.map(Utility :: parseIssue)
-					.collect(Collectors.toList());
-
-		}catch (IOException e) {
-			e.printStackTrace();
+		if (null != issuesFilePath && Files.exists(issuesFilePath)) {
+			try {
+				issues = Files.lines(issuesFilePath).map(Utility::parseIssue)
+						.filter(issue -> issue != null && issue.getIssueId().startsWith("IS"))
+						.collect(Collectors.toList());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
